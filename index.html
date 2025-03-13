@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Regret Calculator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Stock Regret Calculator</h1>
+    <p class="intro">Ever wonder what your stocks could’ve been worth if you’d held onto them? Type a stock ticker (e.g., AAPL) to see suggestions, then select one to calculate your missed gains—or smart moves—in cash and cool stuff you could’ve bought!</p>
+    <form id="stock-form">
+      <div class="form-group">
+        <label for="ticker-search">Stock</label>
+        <div class="search-container">
+          <input type="text" id="ticker-search" placeholder="Search for a stock...">
+          <button id="clear-search" class="clear-btn" style="display: none;">X</button>
+          <input type="hidden" id="ticker">
+        </div>
+        <div id="ticker-suggestions"></div>
+      </div>
+      <div class="form-group">
+        <label for="shares">Shares</label>
+        <div class="input-container">
+          <input type="number" id="shares" placeholder="Number of shares" required min="1" step="1">
+          <button id="clear-shares" class="clear-btn" style="display: none;">X</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <details>
+          <summary>Bought Date (Optional)</summary>
+          <div class="input-container">
+            <input type="date" id="bought-date" placeholder="Bought date">
+            <button id="clear-bought" class="clear-btn" style="display: none;">X</button>
+          </div>
+          <small>Works from March 2015 onward.</small>
+        </details>
+      </div>
+      <div class="form-group">
+        <label for="sold-date">Sold Date</label>
+        <div class="input-container">
+          <input type="date" id="sold-date" placeholder="Sold date" required>
+          <button id="clear-sold" class="clear-btn" style="display: none;">X</button>
+        </div>
+        <small>Works from March 2015 onward.</small>
+      </div>
+      <button type="submit">Calculate</button>
+    </form>
+    <div id="results" style="display: none;"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
