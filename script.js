@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let companies = []; // Initialize empty, to be filled by fetch
 
   // Fetch the full stock list from the server
-  fetch('http://localhost:3000/stocks')
+  fetch('https://stock-regret-backend.onrender.com/stocks')
     .then(response => response.json())
     .then(data => {
       companies = data;
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
   ];
 
   async function getHistoricalPrice(ticker, date) {
-    const response = await fetch(`http://localhost:3000/stock/${ticker}/${date}`);
+    const response = await fetch(`https://stock-regret-backend.onrender.com/stock/${ticker}/${date}`);
     const data = await response.json();
     if (data.error) {
       console.error(`Error fetching ${ticker} on ${date}: ${data.error}`);
@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function getCurrentPrice(ticker) {
     const today = new Date().toISOString().split('T')[0];
-    const response = await fetch(`http://localhost:3000/stock/${ticker}/${today}`);
+    const response = await fetch(`https://stock-regret-backend.onrender.com
+/stock/${ticker}/${today}`);
     const data = await response.json();
     if (data.error) {
       console.error(`Error fetching ${ticker} today: ${data.error}`);
@@ -215,3 +216,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+
