@@ -3,7 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Fetch the full stock list from the server
   fetch('https://stock-regret-backend.onrender.com/stocks')
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+      return response.json();
+    })
     .then(data => {
       companies = data;
       console.log(`Loaded ${companies.length} stocks`);
@@ -32,8 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function getCurrentPrice(ticker) {
     const today = new Date().toISOString().split('T')[0];
-    const response = await fetch(`https://stock-regret-backend.onrender.com
-/stock/${ticker}/${today}`);
+    const response = await fetch(`https://stock-regret-backend.onrender.com/stock/${ticker}/${today}`);
     const data = await response.json();
     if (data.error) {
       console.error(`Error fetching ${ticker} today: ${data.error}`);
@@ -61,21 +63,23 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    const matches = companies.filter(company => 
-      company.ticker.toLowerCase().includes(query) || 
-      company.name.toLowerCase().includes(query)
-    ).slice(0, 10); // Limit to 10 suggestions for performance
+    const matches = companies.filter(company => {
+      const ticker = company.ticker || ""; // Fallback to empty string if undefined
+      const name = company.name || "";     // Fallback to empty string if undefined
+      return ticker.toLowerCase().includes(query) || 
+             name.toLowerCase().includes(query);
+    }).slice(0, 10); // Limit to 10 suggestions for performance
 
     if (matches.length > 0) {
       matches.forEach(company => {
         const item = document.createElement('div');
         item.className = 'suggestion-item';
         item.innerHTML = `
-          <span>${company.ticker} - ${company.name}</span>
-        `; // No logos since stocks.json doesn’t include them
+          <span>${company.ticker || 'N/A'} - ${company.name || 'Unknown'}</span>
+        `; // Fallbacks in display too
         item.addEventListener('click', function() {
-          tickerSearch.value = `${company.ticker} - ${company.name}`;
-          tickerInput.value = company.ticker;
+          tickerSearch.value = `${company.ticker || ''} - ${company.name || ''}`;
+          tickerInput.value = company.ticker || '';
           suggestionsDiv.style.display = 'none';
           tickerSearch.style.background = 'none'; // No logo
           tickerSearch.style.paddingLeft = '8px';
@@ -159,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!historicalPriceSold || !currentPrice) {
         document.getElementById('results').innerHTML = '<p>No data available for that date or ticker. Try a different trading day (weekdays only).</p>';
         return;
-      }
+    }
 
       const soldValue = historicalPriceSold * shares;
       const currentValue = currentPrice * shares;
@@ -216,5 +220,3 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
-
-
