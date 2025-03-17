@@ -64,24 +64,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const matches = companies.filter(company => {
-      const ticker = company.ticker || ""; // Fallback to empty string if undefined
-      const name = company.name || "";     // Fallback to empty string if undefined
-      return ticker.toLowerCase().includes(query) || 
+      const symbol = company.symbol || ""; // Use symbol, fallback to empty
+      const name = company.name || "";
+      return symbol.toLowerCase().includes(query) || 
              name.toLowerCase().includes(query);
-    }).slice(0, 10); // Limit to 10 suggestions for performance
+    }).slice(0, 10); // Limit to 10 suggestions
 
     if (matches.length > 0) {
       matches.forEach(company => {
         const item = document.createElement('div');
         item.className = 'suggestion-item';
         item.innerHTML = `
-          <span>${company.ticker || 'N/A'} - ${company.name || 'Unknown'}</span>
-        `; // Fallbacks in display too
+          <span>${company.symbol} - ${company.name}</span>
+        `; // Use symbol directly, no fallbacks needed now
         item.addEventListener('click', function() {
-          tickerSearch.value = `${company.ticker || ''} - ${company.name || ''}`;
-          tickerInput.value = company.ticker || '';
+          tickerSearch.value = `${company.symbol} - ${company.name}`;
+          tickerInput.value = company.symbol; // Just the symbol for form
           suggestionsDiv.style.display = 'none';
-          tickerSearch.style.background = 'none'; // No logo
+          tickerSearch.style.background = 'none';
           tickerSearch.style.paddingLeft = '8px';
         });
         suggestionsDiv.appendChild(item);
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   document.getElementById('clear-search').addEventListener('click', function() {
-    const tickerSearch = document.getElementById('ticker-search'); // Re-fetch to ensure it’s current
+    const tickerSearch = document.getElementById('ticker-search');
     if (tickerSearch) {
       tickerSearch.value = '';
       tickerInput.value = '';
@@ -163,14 +163,14 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!historicalPriceSold || !currentPrice) {
         document.getElementById('results').innerHTML = '<p>No data available for that date or ticker. Try a different trading day (weekdays only).</p>';
         return;
-    }
+      }
 
       const soldValue = historicalPriceSold * shares;
       const currentValue = currentPrice * shares;
       const difference = currentValue - soldValue;
       const percentageChange = ((currentPrice - historicalPriceSold) / historicalPriceSold) * 100;
 
-      const company = companies.find(c => c.ticker === ticker) || { name: ticker };
+      const company = companies.find(c => c.symbol === ticker) || { name: ticker }; // Use symbol here
       const formatNumber = num => Number(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
       let tableRows = '';
